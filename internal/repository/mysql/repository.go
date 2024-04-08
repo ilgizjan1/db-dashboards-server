@@ -1,4 +1,4 @@
-package mysqlRepo
+package mysql
 
 import (
 	"context"
@@ -18,8 +18,9 @@ func New(db *sql.DB) *Repo {
 	}
 }
 
-func (r *Repo) GetAllTables(ctx context.Context) ([]*mysqlEntity.Table, error) {
-	rows, err := r.DB.QueryContext(ctx, "SELECT * FROM information_schema.tables WHERE table_schema = 'koa'") // todo: return only public tables?
+func (r *Repo) GetAllTables(ctx context.Context, dbName string) ([]*mysqlEntity.Table, error) {
+	query := fmt.Sprintf("SELECT * FROM information_schema.tables WHERE table_schema = '%s'", dbName)
+	rows, err := r.DB.QueryContext(ctx, query) // todo: return only public tables?
 	if err != nil {
 		return nil, err
 	}
